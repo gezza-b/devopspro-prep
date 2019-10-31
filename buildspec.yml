@@ -3,21 +3,37 @@ version: 0.2
 
 environment_variables:
   plaintext:
-    SRC_DIR: /go/src/github.com/gezza-b/devopspro-prep
-    PIPELINE_PACKAGE: imghandler
+    PACKAGE: "github.com/gezza-b/devopspro-prep"
+    S3_BUCKET: "deploy-gez"
 
 
 phases:
   install: 
     commands:
+      - mkdir -p "/go/src/$(dirname ${PACKAGE})"
+      - ln -s "${CODEBUILD_SRC_DIR}" "/go/src/${PACKAGE}" 
+
+      # print env variables
+      - env
+      # Install golint
+      - go get -u github.com/golang/lint/golint
+      - go get -u github.com/golang/dep/cmd/dep
+      
       - apt-get update
       - apt-get install zip -y
-      - go get -u github.com/golang/dep/cmd/dep
-      - go get -u github.com/golang/lint/golint
 
   pre-build:
+    commands:
+      - cd "/go/src/${PACKAGE}"
+      # Fetch all dependencies
+      - go get -t ./...
+
+
       - golint -set_exit_status
       #- go test
+
+      - go vet .
+
 
   build:
     commands:
@@ -26,6 +42,8 @@ phases:
       #- go get ./...
       #- echo Compiling the Go code...
       - go build lambda/imghandler.go 
+      # Package our application with AWS SAM
+      - aws cloudformation package --template-file template.yml --s3-bucket ${S3_BUCKET} --output-template-file packaged.yml
       
   post_build:
     commands:
