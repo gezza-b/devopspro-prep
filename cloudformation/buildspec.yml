@@ -3,8 +3,8 @@ version: 0.2
 
 environment_variables:
   plaintext:
-    SRC_DIR: /go/src/github.com/mweagle/SpartaCodePipeline
-    PIPELINE_PACKAGE: SpartaCodePipeline.zip
+    SRC_DIR: /go/src/github.com/gezza-b/devopspro-prep
+    PIPELINE_PACKAGE: imghandler
 
 
 phases:
@@ -25,7 +25,7 @@ phases:
       #- echo Getting packages
       #- go get ./...
       #- echo Compiling the Go code...
-      - go build lambda/main.go 
+      - go build lambda/imghandler.go 
       
   post_build:
     commands:

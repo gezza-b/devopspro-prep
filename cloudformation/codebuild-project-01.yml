@@ -38,11 +38,10 @@ Resources:
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
         EnvironmentVariables:
-          Name: var01
-          Type: PLAINTEXT
-          Value: val01
+          - Name: var01
+            Type: PLAINTEXT
+            Value: val01
         Image: aws/codebuild/eb-go-1.6-amazonlinux-64:2.3.2-1.0.0 #registry/repository:latest
-        # Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
         Type: LINUX_CONTAINER
       LogsConfig:
         CloudWatchLogs:
@@ -54,7 +53,7 @@ Resources:
         Location: "https://github.com/gezza-b/devopspro-prep.git" # If you specify CODEPIPELINE for the Type property, don't specify this property. For all of the other types, you must specify Location.
         ReportBuildStatus: true
         Type: GITHUB
-        BuildSpec: buildspec.yml 
+        BuildSpec: ./cloudformation/buildspec.yml 
       TimeoutInMinutes: 5
 
           
