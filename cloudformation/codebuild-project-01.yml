@@ -50,10 +50,10 @@ Resources:
       Name: CodeBuild01
       ServiceRole: !Ref CodeBuildRole
       Source:  # you must connect your AWS account to your GitHub account. 
-        Location: "https://github.com/gezza-b/devopspro-prep.git" # If you specify CODEPIPELINE for the Type property, don't specify this property. For all of the other types, you must specify Location.
+        Location: "https://github.com/gezza-b/devopspro-prep" # If you specify CODEPIPELINE for the Type property, don't specify this property. For all of the other types, you must specify Location.
         ReportBuildStatus: true
         Type: GITHUB
-        BuildSpec: buildspec.yml 
+        BuildSpec: "buildspec.yml"
       TimeoutInMinutes: 5
 
           
