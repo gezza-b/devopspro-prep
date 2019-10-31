@@ -37,7 +37,12 @@ Resources:
         Type: S3
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: registry/repository:latest
+        EnvironmentVariables:
+          Name: var01
+          Type: PLAINTEXT
+          Value: val01
+        Image: aws/codebuild/eb-go-1.6-amazonlinux-64:2.3.2-1.0.0 #registry/repository:latest
+        # Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
         Type: LINUX_CONTAINER
       LogsConfig:
         CloudWatchLogs:
