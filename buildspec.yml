@@ -16,11 +16,11 @@ phases:
       # print env variables
       - env
       # Install golint
-      - go get -u github.com/golang/lint/golint
+      #- go get -u github.com/golang/lint/golint
       - go get -u github.com/golang/dep/cmd/dep
       
-      - apt-get update
-      - apt-get install zip -y
+      #- apt-get update
+      #- apt-get install zip -y
 
   pre_build:
     commands:
@@ -28,10 +28,10 @@ phases:
       # Fetch all dependencies
       - go get -t ./...
 
-      - golint -set_exit_status
+      # - golint -set_exit_status
       #- go test
 
-      - go vet .
+      #- go vet .
 
 
   build:
