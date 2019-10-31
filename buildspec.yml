@@ -28,7 +28,6 @@ phases:
       # Fetch all dependencies
       - go get -t ./...
 
-
       - golint -set_exit_status
       #- go test
 
