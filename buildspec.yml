@@ -22,7 +22,7 @@ phases:
       - apt-get update
       - apt-get install zip -y
 
-  pre-build:
+  pre_build:
     commands:
       - cd "/go/src/${PACKAGE}"
       # Fetch all dependencies
