@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Creates a new CodeCommit repository
+# Deployment:
+# aws cloudformation create-stack --stack-name scm-repo-devopscert --template-body file://scm-repo.yml 
+
+Resources:
+  LzRepo:
+    Type: AWS::CodeCommit::Repository
+    Properties : 
+      RepositoryDescription : SCM for the DPE Landing Zone
+      RepositoryName : DevOpsCertRepo
+
+Outputs:
+  DevOpsCertRepo:
+    Value: !Ref DevOpsCertRepo
+    Export: 
+      Name: !Sub ${AWS::StackName}-DevOpsCertRepo
+  LDevOpsCertRepoArn:
+    Value: !GetAtt LzRepo.Arn
+    Export: 
+      Name: !Sub ${AWS::StackName}-DevOpsCertRepoArn
+  DevOpsCertRepoCloneUrlHttp:
+    Value: !GetAtt LzRepo.CloneUrlHttp
+    Export: 
+      Name: !Sub ${AWS::StackName}-DevOpsCertRepoCloneUrlHttp
+  DevOpsCertRepo:
+    Value: !GetAtt LzRepo.Name
+    Export:
+      Name: !Sub ${AWS::StackName}-DevOpsCertRepo
+      

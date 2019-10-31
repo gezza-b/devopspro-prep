@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: S3 bucket for testing
+# Deployment:
+# aws cloudformation create-stack --stack-name codebuild-devopscert01 --template-body file://codebuild-project-01.yml --capabilities CAPABILITY_NAMED_IAM
+
+# Update
+# aws cloudformation update-stack --stack-name codebuild-devopscert01 --template-body file://codebuild-project-01.yml --capabilities CAPABILITY_NAMED_IAM
+
+
+Parameters:
+  ArtifactBucket:
+    Description: Bucket for artifacts
+    Type: String
+    Default: deploy-gez
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html
+Resources:
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          Effect: Allow
+          Principal:
+            Service: codebuild.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/CloudWatchFullAccess
+
+  BuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties: 
+      Artifacts: 
+        Location: !Ref ArtifactBucket
+        OverrideArtifactName: true
+        Type: S3
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: registry/repository:latest
+        Type: LINUX_CONTAINER
+      LogsConfig:
+        CloudWatchLogs:
+          GroupName: codebuild
+          Status: ENABLED
+      Name: CodeBuild01
+      ServiceRole: !Ref CodeBuildRole
+      Source:  # you must connect your AWS account to your GitHub account. 
+        Location: "https://github.com/gezza-b/devopspro-prep.git" # If you specify CODEPIPELINE for the Type property, don't specify this property. For all of the other types, you must specify Location.
+        ReportBuildStatus: true
+        Type: GITHUB
+        BuildSpec: buildspec.yml 
+      TimeoutInMinutes: 5
+
+          

@@ -1,0 +1,21 @@
+# https://docs.aws.amazon.com/lambda/latest/dg/with-s3-example.html
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  ImgHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: bin/imghandler
+      Runtime: go1.x
+      Timeout: 5
+      #Policies: AWSLambdaExecute
+      Events:
+        ImgHandler:
+          Type: S3
+          Properties:
+            Bucket: !Ref SrcBucket
+            Events: s3:ObjectCreated:*
+
+  SrcBucket:
+    Type: AWS::S3::Bucket

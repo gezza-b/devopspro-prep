@@ -1,0 +1,9 @@
+/security/*.*
+*.txt
+*.pem
+/.serverless/*.*
+/bin
+*.bak
+/vendor/*.*
+*copy*.*
+Gopkg.*
