@@ -1,22 +1,36 @@
 ---
 version: 0.2
+
+environment_variables:
+  plaintext:
+    SRC_DIR: /go/src/github.com/mweagle/SpartaCodePipeline
+    PIPELINE_PACKAGE: SpartaCodePipeline.zip
+
+
 phases:
   install: 
     commands:
+      - apt-get update
+      - apt-get install zip -y
+      - go get -u github.com/golang/dep/cmd/dep
       - go get -u github.com/golang/lint/golint
-      - echo CODEBUILD_SRC_DIR - $CODEBUILD_SRC_DIR
-      - echo GOPATH - $GOPATH
-      - echo GOROOT - $GOROOT
+
+  pre-build:
+      - golint -set_exit_status
+      #- go test
+
   build:
     commands:
-      - echo Build started on `date`
-      - echo Getting packages
-      - go get ./...
-      - echo Compiling the Go code...
+      #- echo Build started on `date`
+      #- echo Getting packages
+      #- go get ./...
+      #- echo Compiling the Go code...
       - go build lambda/main.go 
+      
   post_build:
     commands:
       - echo Build completed on `date`
+
 artifacts:
   files:
     - imghandler
