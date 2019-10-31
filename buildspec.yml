@@ -19,8 +19,9 @@ phases:
       #- go get -u github.com/golang/lint/golint
       - go get -u github.com/golang/dep/cmd/dep
       
-      #- apt-get update
+      - apt-get update
       #- apt-get install zip -y
+      
 
   pre_build:
     commands:
