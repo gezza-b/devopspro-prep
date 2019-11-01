@@ -15,7 +15,7 @@ phases:
       - mkdir -p "/go/src/$(dirname ${PACKAGE})"
       - ln -s "${CODEBUILD_SRC_DIR}" "/go/src/${PACKAGE}" 
       # print env variables
-      - env
+      - env | sort
       #- go get -u github.com/golang/lint/golint
     finally:
       - echo End of install phase
@@ -23,15 +23,12 @@ phases:
   pre_build:
     commands:
       - cd "/go/src/${PACKAGE}"
-
       # Fetch all dependencies
       - go get -t ./...
-      #- go get -u github.com/golang/lint/golint
       - go get -u golang.org/x/lint/golint
 
-      # - golint -set_exit_status
+      - golint -set_exit_status
       #- go test
-      - go vet .
     finally:
       - echo End of pre_build phase
 
