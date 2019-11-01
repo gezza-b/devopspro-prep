@@ -17,7 +17,7 @@ phases:
       # print env variables
       - env
       # install golint
-      - go get -u github.com/golang/lint/golint
+      #- go get -u github.com/golang/lint/golint
     finally:
       - echo End of install phase
 
@@ -26,6 +26,7 @@ phases:
       - cd "/go/src/${PACKAGE}"
       # Fetch all dependencies
       - go get -t ./...
+	    - go get -u golang.org/x/lint/golint
 
       # - golint -set_exit_status
       #- go test
