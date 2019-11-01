@@ -43,8 +43,8 @@ Resources:
           - Name: var01
             Type: PLAINTEXT
             Value: val01
-        Image: aws/codebuild/eb-go-1.6-amazonlinux-64:2.3.2-1.0.0
-        #Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0:latest
+        #Image: aws/codebuild/eb-go-1.6-amazonlinux-64:2.3.2-1.0.0
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0:latest
         Type: LINUX_CONTAINER
       LogsConfig:
         CloudWatchLogs:
