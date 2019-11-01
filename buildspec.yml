@@ -24,9 +24,10 @@ phases:
   pre_build:
     commands:
       - cd "/go/src/${PACKAGE}"
+
       # Fetch all dependencies
       - go get -t ./...
-	    - go get -u golang.org/x/lint/golint
+	    #- go get -u golang.org/x/lint/golint
 
       # - golint -set_exit_status
       #- go test
