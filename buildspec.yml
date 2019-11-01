@@ -12,17 +12,12 @@ phases:
     runtime-versions:
       golang: 1.13
     commands:
-      # debug
-      - env | sort 
-
       - mkdir -p "/go/src/$(dirname ${PACKAGE})"
       - ln -s "${CODEBUILD_SRC_DIR}" "/go/src/${PACKAGE}" 
-
-      - go get -u github.com/golang/lint/golint
-      
-      #- go get -t ./...
       # print env variables
-      #- env
+      - env
+      # install golint
+      - go get -u github.com/golang/lint/golint
     finally:
       - echo End of install phase
 
@@ -31,11 +26,10 @@ phases:
       - cd "/go/src/${PACKAGE}"
       # Fetch all dependencies
       - go get -t ./...
-      #- go get -t ./...
 
       # - golint -set_exit_status
       #- go test
-      #- go vet .
+      - go vet .
     finally:
       - echo End of pre_build phase
 
