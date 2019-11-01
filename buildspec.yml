@@ -12,7 +12,6 @@ phases:
     runtime-versions:
       golang: 1.13
     commands:
-      - apt-get update -y
       - mkdir -p "/go/src/$(dirname ${PACKAGE})"
       - ln -s "${CODEBUILD_SRC_DIR}" "/go/src/${PACKAGE}" 
       # print env variables
