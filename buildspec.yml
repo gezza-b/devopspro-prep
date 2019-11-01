@@ -10,6 +10,8 @@ environment_variables:
 phases:
   install: 
     commands:
+      runtime-version:
+        golang: 1.13
       - mkdir -p "/go/src/$(dirname ${PACKAGE})"
       - ln -s "${CODEBUILD_SRC_DIR}" "/go/src/${PACKAGE}" 
       #- apt-get update
