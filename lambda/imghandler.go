@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/aws/aws-lambda-go/lambda"
 	// "github.com/aws/aws-xray-sdk-go/xray"
 )
@@ -19,7 +17,8 @@ func HandleRequest(name MyEvent) (response string, err error) {
 	// 	ServiceVersion: "1.2.3",
 	// })
 
-	return fmt.Sprintf("Hello %s!", name.Name), nil
+	//return fmt.Sprintf("Hello %s!", name.Name), nil
+	return resp, nil
 }
 
 func main() {

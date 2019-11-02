@@ -1,15 +1,22 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"io/ioutil"
 	"testing"
+
+	"gotest.tools/assert"
 )
 
-const expectedRes = "Hello"
+const expectedResp = "Hello"
 const putObjectEvent = "../testevents/s3upload.json"
 
-func TestSpanish(t *testing.T) {
+func TestUploadEvent(t *testing.T) {
 	file, _ := ioutil.ReadFile(putObjectEvent)
-	fmt.Println("file: ", file)
+
+	data := MyEvent{}
+	_ = json.Unmarshal([]byte(file), &data)
+	var err, res = HandleRequest(data)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, res, expectedResp)
 }
