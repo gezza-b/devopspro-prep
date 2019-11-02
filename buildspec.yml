@@ -27,7 +27,7 @@ phases:
       - go get -u golang.org/x/lint/golint
 
       - golint -set_exit_status
-      - go test
+      - go test ./...
     finally:
       - echo End of pre_build phase
 
