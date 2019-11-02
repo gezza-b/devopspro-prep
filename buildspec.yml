@@ -48,3 +48,4 @@ phases:
 artifacts:
   files:
     - imghandler
+    - packaged.yml
