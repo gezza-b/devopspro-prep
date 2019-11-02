@@ -16,7 +16,6 @@ phases:
       - ln -s "${CODEBUILD_SRC_DIR}" "/go/src/${PACKAGE}" 
       # print env variables
       - env | sort
-      #- go get -u github.com/golang/lint/golint
     finally:
       - echo End of install phase
 
@@ -28,7 +27,7 @@ phases:
       - go get -u golang.org/x/lint/golint
 
       - golint -set_exit_status
-      #- go test
+      - go test
     finally:
       - echo End of pre_build phase
 
