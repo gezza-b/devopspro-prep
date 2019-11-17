@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Creates an SQS queue to store image information
+# Deployment:
+# aws cloudformation create-stack --stack-name sqs-cataloguing-devopscert --template-body file://sqs.yml 
+
+Resources:
+  ImgQueue:
+    Type: AWS::SQS::Queue
+    Properties: 
+      DelaySeconds: 0
+      KmsDataKeyReusePeriodSeconds: 86400 # 24 hours
+      KmsMasterKeyId: aws
+      MaximumMessageSize: 262144
+      MessageRetentionPeriod: 604800      # 7 days
+      QueueName: imgq
+      ReceiveMessageWaitTimeSeconds: 20
+      Tags: 
+        - Key: Name
+          Value: cataloguingQueue
+        - Key: Env
+          Value: test
+      VisibilityTimeout: 30  
+
+Outputs:
+  ImgQeueue:
+    Value: !Ref ImgQueue
+    Export: 
+      Name: !Sub ${AWS::StackName}-ImgQueue
+  ImgQueueArn:
+    Value: !GetAtt ImgQueue.Arn
+    Export: 
+      Name: !Sub ${AWS::StackName}-ImgQueueArn
+  ImgQeueueName:
+    Value: !GetAtt ImgQueue.QueueName
+    Export: 
+      Name: !Sub ${AWS::StackName}-ImgQueueName
