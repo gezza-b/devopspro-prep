@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: S3 bucket for testing
+Description: Test and build our Golang Lambda
 # Deployment:
 # aws cloudformation create-stack --stack-name codebuild-devopscert01 --template-body file://codebuild-project-01.yml --capabilities CAPABILITY_NAMED_IAM
 
