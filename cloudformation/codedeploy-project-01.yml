@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Test and build our Golang Lambda
+# Deployment:
+# aws cloudformation create-stack --stack-name codedeploy-devopscert01 --template-body file://codedeploy-project-01.yml --capabilities CAPABILITY_NAMED_IAM
+
+Parameters:
+  ApplicationName: 
+    Description: This will be used to name the pipeline and build resources
+    Type: String
+    Default: MyApp
+
+Resources:
+  CodeDeployApplication:
+    Description: The app
+    Type: AWS::CodeDeploy::Application
+    Properties: 
+      ApplicationName: GoLambda
+
+
+Outputs:
+  CodeDeployApplication:
+    Description: The CodeDeploy application used across all environments
+    Value: !Ref CodeDeployApplication
+    Export:
+        Name: !Sub CodeDeployApplication-${ApplicationName}
