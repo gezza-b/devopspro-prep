@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -14,6 +13,8 @@ const resp string = "Hello"
 const bucket string = "imghandler-gez"
 const region string = "us-east-1"
 const imgName string = "2faces.jpeg"
+const maxlabels = 100
+const minconfidence = 70.000000
 
 type MyEvent struct {
 	Name string `json:"name"`
@@ -44,8 +45,8 @@ func HandleRequest(name MyEvent) (response string, err error) {
 				Name:   aws.String(imgName),
 			},
 		},
-		MaxLabels:     aws.Int64(100),
-		MinConfidence: aws.Float64(70.000000),
+		MaxLabels:     aws.Int64(maxlabels),
+		MinConfidence: aws.Float64(minconfidence),
 	}
 	result, err := client.DetectLabels(input)
 
@@ -53,10 +54,10 @@ func HandleRequest(name MyEvent) (response string, err error) {
 		fmt.Println("error")
 	} else {
 		//https://blog.golang.org/json-and-go
-		var f interface{}
-		err := json.Unmarshal(b, &f)
 
 		fmt.Println(":result: ", result)
+
+		fmt.Println("__", result.GoString)
 	}
 	return resp, nil
 }
