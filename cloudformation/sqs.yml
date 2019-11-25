@@ -3,16 +3,20 @@ Description: Creates an SQS queue to store image information
 # Deployment:
 # aws cloudformation create-stack --stack-name sqs-cataloguing-devopscert --template-body file://sqs.yml 
 
+# aws cloudformation delete-stack --stack-name sqs-cataloguing-devopscert 
+
+# aws cloudformation update-stack --stack-name sqs-cataloguing-devopscert --template-body file://sqs.yml 
+
 Resources:
-  ImgQueue:
+  CatalogueQ:
     Type: AWS::SQS::Queue
     Properties: 
       DelaySeconds: 0
       KmsDataKeyReusePeriodSeconds: 86400 # 24 hours
-      KmsMasterKeyId: aws
+      #KmsMasterKeyId: "aws/sqs"
       MaximumMessageSize: 262144
       MessageRetentionPeriod: 604800      # 7 days
-      QueueName: imgq
+      QueueName: CatalogueQ
       ReceiveMessageWaitTimeSeconds: 20
       Tags: 
         - Key: Name
@@ -21,16 +25,48 @@ Resources:
           Value: test
       VisibilityTimeout: 30  
 
+  CatalogueQkey:  
+    Type: AWS::KMS::Key
+    Properties: 
+      Description: Key for the image queue
+      Enabled: true
+      EnableKeyRotation: true
+      KeyPolicy: 
+        Version: "2012-10-17"
+        Id: key-default-1
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Join 
+                - ''
+                - - 'arn:aws:iam::'
+                  - !Ref 'AWS::AccountId'
+                  - ':root'
+            Action: 'kms:*'
+            Resource: '*'
+      KeyUsage: ENCRYPT_DECRYPT
+      PendingWindowInDays: 7
+      Tags: 
+        - Key: Name
+          Value: catalogueQueueKey
+        - Key: Env
+          Value: test
+
 Outputs:
   ImgQeueue:
-    Value: !Ref ImgQueue
+    Value: !Ref CatalogueQ
     Export: 
-      Name: !Sub ${AWS::StackName}-ImgQueue
-  ImgQueueArn:
-    Value: !GetAtt ImgQueue.Arn
+      Name: !Sub ${AWS::StackName}-CatalogueQ
+  CatalogueQueueArn:
+    Value: !GetAtt CatalogueQ.Arn
     Export: 
-      Name: !Sub ${AWS::StackName}-ImgQueueArn
-  ImgQeueueName:
-    Value: !GetAtt ImgQueue.QueueName
+      Name: !Sub ${AWS::StackName}-CatalogueQarn
+  CatalogueQeueueName:
+    Value: !GetAtt CatalogueQ.QueueName
     Export: 
-      Name: !Sub ${AWS::StackName}-ImgQueueName
+      Name: !Sub ${AWS::StackName}-CatalogueQname
+  CatalogueQkey:
+    Value: !Ref CatalogueQkey
+    Export:
+      Name: !Sub ${AWS::StackName}-CatalogueQkey
