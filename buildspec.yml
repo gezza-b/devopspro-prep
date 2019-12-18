@@ -38,6 +38,7 @@ phases:
       - go get ./...
       #- echo Compiling the Lambda code...
       - go build lambda/getdata/imghandler.go
+      - go build lambda/putdata/writedata.go
       # Packaging with AWS SAM
       - aws cloudformation package --template-file template.yml --s3-bucket ${S3_BUCKET} --output-template-file packaged.yml
       
@@ -48,4 +49,5 @@ phases:
 artifacts:
   files:
     - imghandler
+    - writedata
     - packaged.yml
