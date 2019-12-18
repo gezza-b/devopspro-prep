@@ -3,23 +3,26 @@ Description: Test and build our Golang Lambda
 # Deployment:
 # aws cloudformation create-stack --stack-name codedeploy-devopscert01 --template-body file://codedeploy-project-01.yml --capabilities CAPABILITY_NAMED_IAM
 
+# Update
+# aws cloudformation update-stack --stack-name codedeploy-devopscert01 --template-body file://codedeploy-project-01.yml --capabilities CAPABILITY_NAMED_IAM
+
 Parameters:
-  ApplicationName: 
+  ImgHandlerAppName: 
     Description: This will be used to name the pipeline and build resources
     Type: String
-    Default: MyApp
+    Default: ImgRegognition
 
 Resources:
   CodeDeployApplication:
-    Description: The app
+    Description: Image recognitionapp
     Type: AWS::CodeDeploy::Application
     Properties: 
-      ApplicationName: GoLambda
-
+      ApplicationName: !Ref ImgHandlerAppName
+      ComputePlatform: Lambda
 
 Outputs:
   CodeDeployApplication:
     Description: The CodeDeploy application used across all environments
     Value: !Ref CodeDeployApplication
     Export:
-        Name: !Sub CodeDeployApplication-${ApplicationName}
+      Name: !Sub ${AWS::StackName}-CodeDeployApplication
