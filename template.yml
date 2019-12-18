@@ -27,8 +27,8 @@ Resources:
           Type: SNS
           Properties:
             Topic: 
-              Fn::ImportValue:
-              !Sub "${NetworkStack}-SubnetID"
+              Fn::ImportValue: 
+                !Sub "${sns-cataloguing-devopscert}-AddImgTopic"
 
   SrcBucket:
     Type: AWS::S3::Bucket
