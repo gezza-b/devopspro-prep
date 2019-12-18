@@ -4,7 +4,7 @@ version: 0.2
 environment_variables:
   plaintext:
     PACKAGE: "github.com/gezza-b/devopspro-prep"
-    S3_BUCKET: "deploy-gez"
+    S3_BUCKET: "deploy-gez-useast"
 
 
 phases:
