@@ -12,12 +12,12 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       DisplayName: AddImgTopic
-      #Subscription:
-        #- Endpoint:
-        #    Fn::GetAtt:
-        #      - "ImgQueue"
-        #      - "Arn"
-        #  Protocol: "https"
+      Subscription:
+        - Endpoint:
+            Fn::GetAtt:
+              - "ImgQueue"
+              - "Arn"
+          Protocol: "https"
       Tags: 
         - Key: Name
           Value: addimgtopic
@@ -25,4 +25,8 @@ Resources:
           Value: test
       TopicName: "AddImgTopic"
 
-#Outputs:
+Outputs:
+  AddImgTopic:
+    Value: !Ref AddImgTopic   # ARN
+    Export: 
+      Name: !Sub ${AWS::StackName}-AddImgTopic
