@@ -37,7 +37,7 @@ phases:
       - echo Getting packages
       - go get ./...
       #- echo Compiling the Lambda code...
-      - go build lambda/imghandler.go 
+      - go build lambda/getdata/imghandler.go
       # Packaging with AWS SAM
       - aws cloudformation package --template-file template.yml --s3-bucket ${S3_BUCKET} --output-template-file packaged.yml
       
