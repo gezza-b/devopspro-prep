@@ -13,7 +13,7 @@ Parameters:
   ArtifactBucket:
     Description: Bucket for artifacts
     Type: String
-    Default: deploy-gez
+    Default: deploy-gez-useast
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html
 Resources:
