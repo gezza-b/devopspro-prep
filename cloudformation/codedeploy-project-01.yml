@@ -1,28 +1,21 @@
-AWSTemplateFormatVersion: 2010-09-09
-Description: Test and build our Golang Lambda
 # Deployment:
 # aws cloudformation create-stack --stack-name codedeploy-devopscert01 --template-body file://codedeploy-project-01.yml --capabilities CAPABILITY_NAMED_IAM
 
-# Update
-# aws cloudformation update-stack --stack-name codedeploy-devopscert01 --template-body file://codedeploy-project-01.yml --capabilities CAPABILITY_NAMED_IAM
+# aws cloudformation update-stack --stack-name codedeploy-devopscert01 --template-body file://codedeploy-project-01.yml --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
 
-Parameters:
-  ImgHandlerAppName: 
-    Description: This will be used to name the pipeline and build resources
-    Type: String
-    Default: ImgRegognition
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Build the image recognition app
 
 Resources:
-  CodeDeployApplication:
-    Description: Image recognitionapp
-    Type: AWS::CodeDeploy::Application
-    Properties: 
-      ApplicationName: !Ref ImgHandlerAppName
-      ComputePlatform: Lambda
+  ImgHandlerFunction:
+   Type: AWS::Serverless::Function
+   Properties:
+     Handler: bin/imghandler
+     Runtime: go1.x
+     CodeUri: s3://deploy-gez-useast/CodeBuild01/imghandler
+     # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/automating-updates-to-serverless-apps.html
+     AutoPublishAlias: live
 
-Outputs:
-  CodeDeployApplication:
-    Description: The CodeDeploy application used across all environments
-    Value: !Ref CodeDeployApplication
-    Export:
-      Name: !Sub ${AWS::StackName}-CodeDeployApplication
+     DeploymentPreference:
+       Type: All-at-once 
