@@ -4,8 +4,11 @@
 
 build:
 	dep ensure -v
-	env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/imghandler lambda/imghandler.go
+	env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/imghandler lambda/getdata/imghandler.go
+	env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/writedata lambda/putdata/writedata.go
+
 	chmod 755 bin/imghandler
+	chmod 755 bin/writedata
 clean:
 	rm -rf ./bin ./vendor Gopkg.lock
 
