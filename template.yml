@@ -2,6 +2,7 @@
 
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+Description: Build the image recognition app
 Resources:
   ImgHandler:                                 # ImgHandler - triggered by S3 upload
     Type: AWS::Serverless::Function
@@ -9,7 +10,7 @@ Resources:
       Handler: bin/imghandler
       Runtime: go1.x
       Timeout: 5
-      #Policies: AWSLambdaExecute
+      MemorySize: 128
       Events:
         ImgHandler:
           Type: S3
