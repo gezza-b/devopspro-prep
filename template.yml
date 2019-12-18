@@ -26,6 +26,7 @@ Resources:
         ImgHandler:
           Type: SNS
           Properties:
+            Bucket: !Ref SrcBucket
             Topic: 
               Fn::ImportValue: 
                 !Sub "${sns-cataloguing-devopscert}-AddImgTopic"
