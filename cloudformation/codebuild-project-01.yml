@@ -58,5 +58,3 @@ Resources:
         Type: GITHUB
         BuildSpec: "buildspec.yml"
       TimeoutInMinutes: 5
-
-          
