@@ -7,3 +7,5 @@
 /vendor/*.*
 *copy*.*
 Gopkg.*
+*.ignore
+.vscode
