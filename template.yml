@@ -1,6 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Build the image recognition app
+
+Parameters:
+  ImgBucket:
+    Description: Bucket for image upload
+    Type: String
+    Default: imghandler-gez
+
 Resources:
   ImgHandler:                                 # ImgHandler - triggered by S3 upload
     Type: AWS::Serverless::Function
@@ -9,6 +16,12 @@ Resources:
       Runtime: go1.x
       Timeout: 5
       MemorySize: 128
+      Policies: # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
+        - RekognitionDetectOnlyPolicy: {}
+        - SNSPublishMessagePolicy: 
+            TopicName: AddImgTopic
+        - S3ReadPolicy: 
+            BucketName: !Ref ImgBucket
       Description: Function is triggered after S3 upload and collects image information
       Tags: 
         Name: imghandler
