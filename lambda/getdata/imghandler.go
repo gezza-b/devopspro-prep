@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/joho/godotenv"
 
 	"github.com/aws/aws-sdk-go/service/rekognition"
 	"github.com/aws/aws-sdk-go/service/sns"
@@ -14,11 +16,23 @@ import (
 
 const resp string = "Hello"
 const bucket string = "imghandler-gez"
-const region string = "us-east-1"
 const imgName string = "2faces.jpeg"
 const maxlabels = 100
 const minConfidence float64 = 75.000000
-const snsArn = "arn:aws:sns:us-east-1:986754297117:AddImgTopic"
+
+var region string = os.Getenv("Region")
+var account string = os.Getenv("Account")
+
+func init() {
+	if region == "" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+		region = os.Getenv("Region")
+		account = os.Getenv("Account")
+	}
+}
 
 type MyEvent struct {
 	Name string `json:"name"`
@@ -26,7 +40,6 @@ type MyEvent struct {
 
 // https://docs.aws.amazon.com/lambda/latest/dg/go-programming-model-context.html
 func HandleRequest(name MyEvent) (response string, err error) {
-
 	// lc, _ := lambdacontext.FromContext(ctx)
 	// reqId := lc.AwsRequestID
 	fmt.Println(":event: ", name)
@@ -107,7 +120,7 @@ func getImgInfo(res *rekognition.DetectLabelsOutput) (imgInfo ImgInfo) {
 }
 
 func sendSns(info ImgInfo) (response string, err error) {
-
+	var snsArn = "arn:aws:sns:" + region + ":" + account + ":AddImgTopic"
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
