@@ -1,23 +1,17 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Creates an SQS queue to store image information
 # Deployment:
-# aws cloudformation create-stack --stack-name sns-cataloguing-devopscert --template-body file://sns.yml 
+# aws cloudformation create-stack --stack-name snsCataloguingDevopscert --template-body file://sns.yml 
 
-# aws cloudformation delete-stack --stack-name sns-cataloguing-devopscert 
+# aws cloudformation delete-stack --stack-name snsCataloguingDevopscert 
 
-# aws cloudformation update-stack --stack-name sns-cataloguing-devopscert --template-body file://sns.yml 
+# aws cloudformation update-stack --stack-name snsCataloguingDevopscert --template-body file://sns.yml 
 
 Resources:
   AddImgTopic:
     Type: AWS::SNS::Topic
     Properties:
       DisplayName: AddImgTopic
-      Subscription:
-        - Endpoint:
-            Fn::GetAtt:
-              - "ImgQueue"
-              - "Arn"
-          Protocol: "https"
       Tags: 
         - Key: Name
           Value: addimgtopic
