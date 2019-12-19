@@ -24,13 +24,17 @@ Resources:
       Runtime: go1.x
       Timeout: 5
       Events:
-        ImgHandler:
+        WriteMetaData:
           Type: SNS
-          Properties:
-            Bucket: !Ref SrcBucket
+          Properties: #arn:aws:sns:us-east-1:123456789012:AddImgTopic
             Topic: 
-              Fn::ImportValue: 
-                !Sub "${sns-cataloguing-devopscert}-AddImgTopic"
+              !Join
+                - ''
+                - - 'arn:aws:sns:'
+                  - !Ref 'AWS::Region'
+                  - ':'
+                  - !Ref 'AWS::AccountId'
+                  - ':AddImgTopic'
 
   SrcBucket:
     Type: AWS::S3::Bucket
