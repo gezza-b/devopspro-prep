@@ -1,7 +1,9 @@
 # Deployment:
-# aws cloudformation create-stack --stack-name codedeploy-devopscert01 --template-body file://codedeploy-project-01.yml --capabilities CAPABILITY_NAMED_IAM
+# aws cloudformation create-stack --stack-name codedeployDevopscert01 --template-body file://codedeploy-project-01.yml --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
 
-# aws cloudformation update-stack --stack-name codedeploy-devopscert01 --template-body file://codedeploy-project-01.yml --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
+# aws cloudformation update-stack --stack-name codedeployDevopscert01 --template-body file://codedeploy-project-01.yml --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
+
+# aws cloudformation delete-stack --stack-name codedeployDevopscert01
 
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
@@ -13,9 +15,8 @@ Resources:
    Properties:
      Handler: bin/imghandler
      Runtime: go1.x
-     CodeUri: s3://deploy-gez-useast/CodeBuild01/imghandler
+     CodeUri: s3://deploy-gez-useast/imghandler    #/CodeBuild01
      # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/automating-updates-to-serverless-apps.html
      AutoPublishAlias: live
-
      DeploymentPreference:
-       Type: All-at-once 
+       Type: AllAtOnce

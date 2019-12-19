@@ -1,13 +1,13 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Test and build our Golang Lambda
 # Deployment:
-# aws cloudformation create-stack --stack-name codebuild-devopscert01 --template-body file://codebuild-project-01.yml --capabilities CAPABILITY_NAMED_IAM
+# aws cloudformation create-stack --stack-name codebuildDevopscert01 --template-body file://codebuild-project-01.yml --capabilities CAPABILITY_NAMED_IAM
 
 # Update
-# aws cloudformation update-stack --stack-name codebuild-devopscert01 --template-body file://codebuild-project-01.yml --capabilities CAPABILITY_NAMED_IAM
+# aws cloudformation update-stack --stack-name codebuildDevopscert01 --template-body file://codebuild-project-01.yml --capabilities CAPABILITY_NAMED_IAM
 
 # Delete
-# aws cloudformation delete-stack --stack-name codebuild-devopscert01
+# aws cloudformation delete-stack --stack-name codebuildDevopscert01
 
 Parameters:
   ArtifactBucket:
