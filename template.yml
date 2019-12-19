@@ -1,5 +1,3 @@
-# https://docs.aws.amazon.com/lambda/latest/dg/with-s3-example.html
-
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Build the image recognition app
@@ -11,22 +9,36 @@ Resources:
       Runtime: go1.x
       Timeout: 5
       MemorySize: 128
+      Description: Function is triggered after S3 upload and collects image information
+      Tags: 
+        Name: imghandler
+        Env: test
+        Account: !Ref "AWS::AccountId"
+        Region: !Ref "AWS::Region"
+      Tracing: Active
       Events:
         ImgHandler:
           Type: S3
           Properties:
             Bucket: !Ref SrcBucket
             Events: s3:ObjectCreated:*
-  WriteMetaData:                          # Write Meta Data - triggered by SNS
+  WriteMetaData:                              # Write Meta Data - triggered by SNS
     Type: AWS::Serverless::Function
     Properties:
       Handler: bin/writedata
       Runtime: go1.x
       Timeout: 5
+      Description: Function writes image information to DynamoDB
+      Tags: 
+        Name: writemetadata
+        Env: test
+        Account: !Ref "AWS::AccountId"
+        Region: !Ref "AWS::Region"
+      Tracing: Active
       Events:
         WriteMetaData:
           Type: SNS
-          Properties: #arn:aws:sns:us-east-1:123456789012:AddImgTopic
+          Properties: 
             Topic: 
               !Join
                 - ''
