@@ -10,3 +10,4 @@ Gopkg.*
 *.ignore
 .vscode
 packaged.yml
+.env
