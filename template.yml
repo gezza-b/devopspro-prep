@@ -26,8 +26,10 @@ Resources:
       Tags: 
         Name: imghandler
         Env: test
-        Account: !Ref "AWS::AccountId"
-        Region: !Ref "AWS::Region"
+      Environment:
+        Variables:
+          Account: !Ref "AWS::AccountId"
+          Region: !Ref "AWS::Region"
       Tracing: Active
       Events:
         ImgHandler:
@@ -45,8 +47,10 @@ Resources:
       Tags: 
         Name: writemetadata
         Env: test
-        Account: !Ref "AWS::AccountId"
-        Region: !Ref "AWS::Region"
+      Environment:
+        Variables:
+          Account: !Ref "AWS::AccountId"
+          Region: !Ref "AWS::Region"
       Tracing: Active
       Events:
         WriteMetaData:
