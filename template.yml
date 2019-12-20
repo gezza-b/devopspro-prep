@@ -63,3 +63,21 @@ Resources:
 
   SrcBucket:
     Type: AWS::S3::Bucket
+
+Outputs:
+  ImgHandler:
+    Value: !Ref ImgHandler   
+    Export: 
+      Name: !Sub ${AWS::StackName}-ImgHandler
+  ImgHandlerArn:
+    Value: !GetAtt [ImgHandler, Arn]
+    Export: 
+      Name: !Sub ${AWS::StackName}-ImgHandlerArn  
+  WriteMetaData:
+    Value: !Ref WriteMetaData   
+    Export: 
+      Name: !Sub ${AWS::StackName}-WriteMetaData
+  WriteMetaDataArn:
+    Value: !GetAtt [WriteMetaData, Arn]
+    Export: 
+      Name: !Sub ${AWS::StackName}-WriteMetaDataArn
