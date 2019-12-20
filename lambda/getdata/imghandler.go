@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
@@ -14,16 +16,16 @@ import (
 	"github.com/aws/aws-sdk-go/service/sns"
 )
 
-const resp string = "Hello"
-const bucket string = "imghandler-gez"
-const imgName string = "2faces.jpeg"
 const maxlabels = 100
 const minConfidence float64 = 75.000000
 
-var region string = os.Getenv("Region")
-var account string = os.Getenv("Account")
+var region string
+var account string
 
 func init() {
+	region = os.Getenv("Region")
+	account = os.Getenv("Account")
+	fmt.Println(":init: region: ", region)
 	if region == "" {
 		err := godotenv.Load()
 		if err != nil {
@@ -34,15 +36,14 @@ func init() {
 	}
 }
 
-type MyEvent struct {
-	Name string `json:"name"`
-}
+func HandleRequest(ctx context.Context, ev MyEvent) (response string, err error) {
 
-// https://docs.aws.amazon.com/lambda/latest/dg/go-programming-model-context.html
-func HandleRequest(name MyEvent) (response string, err error) {
-	// lc, _ := lambdacontext.FromContext(ctx)
-	// reqId := lc.AwsRequestID
-	fmt.Println(":event: ", name)
+	fmt.Println(":context: ", ctx)
+	fmt.Println(":event: ", ev)
+
+	var bucket string = ev.Records[0].S3.Bucket.Name
+	var imgName string = ev.Records[0].S3.Object.Key
+	var imgpath string = "https://" + bucket + ".s3.amazonaws.com/" + imgName
 
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(region),
@@ -71,11 +72,9 @@ func HandleRequest(name MyEvent) (response string, err error) {
 		fmt.Println("error: ", err)
 	}
 
-	var info = getImgInfo(resultJson)
-	fmt.Println(":info: ", info)
-
-	// sendSns(jsonData)
-	return resp, nil
+	var info = getImgInfo(resultJson, imgpath)
+	snsid, err := sendSns(info)
+	return snsid, err
 }
 
 func deduplicate(duplicates []string) (dedupe []string) {
@@ -83,14 +82,13 @@ func deduplicate(duplicates []string) (dedupe []string) {
 	for _, val := range duplicates {
 		check[val] = 1
 	}
-
 	for item, _ := range check {
 		dedupe = append(dedupe, item)
 	}
 	return dedupe
 }
 
-func getImgInfo(res *rekognition.DetectLabelsOutput) (imgInfo ImgInfo) {
+func getImgInfo(res *rekognition.DetectLabelsOutput, imgpath string) (imgInfo ImgInfo) {
 	labels := res.Labels
 	parents := make([]string, 0)
 	objects := make([]string, 0)
@@ -113,13 +111,14 @@ func getImgInfo(res *rekognition.DetectLabelsOutput) (imgInfo ImgInfo) {
 
 	}
 
-	imgInfo.persons = nil
-	imgInfo.parents = deduplicate(parents)
-	imgInfo.objects = objects
+	imgInfo.Persons = nil
+	imgInfo.Parents = deduplicate(parents)
+	imgInfo.Objects = objects
+	imgInfo.ImgPath = imgpath
 	return imgInfo
 }
 
-func sendSns(info ImgInfo) (response string, err error) {
+func sendSns(info ImgInfo) (snsid string, err error) {
 	var snsArn = "arn:aws:sns:" + region + ":" + account + ":AddImgTopic"
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
@@ -135,6 +134,7 @@ func sendSns(info ImgInfo) (response string, err error) {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
+	fmt.Println(":sendSns: ", *result.MessageId)
 	return *result.MessageId, nil
 }
 
@@ -143,7 +143,46 @@ func main() {
 }
 
 type ImgInfo struct {
-	persons []string
-	parents []string
-	objects []string
+	Persons []string `json:"persons"`
+	Parents []string `json:"title"`
+	Objects []string `json:"author"`
+	ImgPath string   `json:"imgpath"`
+}
+
+type MyEvent struct {
+	Records []struct {
+		EventVersion string    `json:"eventVersion"`
+		EventSource  string    `json:"eventSource"`
+		AwsRegion    string    `json:"awsRegion"`
+		EventTime    time.Time `json:"eventTime"`
+		EventName    string    `json:"eventName"`
+		UserIdentity struct {
+			PrincipalID string `json:"principalId"`
+		} `json:"userIdentity"`
+		RequestParameters struct {
+			SourceIPAddress string `json:"sourceIPAddress"`
+		} `json:"requestParameters"`
+		ResponseElements struct {
+			XAmzRequestID string `json:"x-amz-request-id"`
+			XAmzID2       string `json:"x-amz-id-2"`
+		} `json:"responseElements"`
+		S3 struct {
+			S3SchemaVersion string `json:"s3SchemaVersion"`
+			ConfigurationID string `json:"configurationId"`
+			Bucket          struct {
+				Name          string `json:"name"`
+				OwnerIdentity struct {
+					PrincipalID string `json:"principalId"`
+				} `json:"ownerIdentity"`
+				Arn string `json:"arn"`
+			} `json:"bucket"`
+			Object struct {
+				Key       string `json:"key"`
+				Size      int    `json:"size"`
+				ETag      string `json:"eTag"`
+				VersionID string `json:"versionId"`
+				Sequencer string `json:"sequencer"`
+			} `json:"object"`
+		} `json:"s3"`
+	} `json:"Records"`
 }
