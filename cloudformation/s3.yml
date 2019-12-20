@@ -1,0 +1,39 @@
+# Deployment:
+# aws cloudformation create-stack --stack-name imgbucketDevopscert01 --template-body file://s3.yml --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
+
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: S3 bucket for image upload
+
+Parameters:
+  ImgBucketName:
+    Description: The name of the bucket that stores the files
+    Type: String  
+    Default: imghandler-gez
+
+
+Resources:
+  ImgBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true 
+      BucketName: !Ref ImgBucketName
+      BucketEncryption:                              
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      NotificationConfiguration:
+        LambdaConfigurations: 
+          - Event: s3:ObjectCreated:Put
+            Function: 
+              Fn::ImportValue: "imghandlerDevopscert-ImgHandlerArn"
+Outputs:
+  ImgBucket:
+    Value: !Ref ImgBucket
+    Export: 
+      Name: !Sub ${AWS::StackName}-ImgBucket
