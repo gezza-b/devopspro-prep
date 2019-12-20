@@ -6,8 +6,9 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-func HandleRequest(name MyMetaData) (response string, err error) {
+func HandleRequest(item MyMetaData) (response string, err error) {
 	fmt.Println(":writedata:handler")
+	fmt.Println(":writedata:handler:item: ", item)
 	return
 	// return nil, nil
 }
