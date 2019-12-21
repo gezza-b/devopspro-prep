@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Create the DynamoDB Table for the image information
+# Deployment:
+# aws cloudformation create-stack --stack-name dynamodbDevopscert01 --template-body file://dynamodb.yml --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
+
+# Update:
+# aws cloudformation update-stack --stack-name dynamodbDevopscert01 --template-body file://dynamodb.yml
+Parameters:
+  TableName:
+    Description: Table Name
+    Type: String
+    Default: imginfo
+
+
+Resources:
+  ImgInfoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions: 
+        - AttributeName: "SnsId"       # sns id
+          AttributeType: "S"
+        - AttributeName: "Labels"      # lables
+          AttributeType: "S"
+        - AttributeName: "Persons"
+          AttributeType: "S"
+        #- AttributeName: "Year"
+        #  AttributeType: "N"
+        - AttributeName: "ImgPath"
+          AttributeType: "S"
+      BillingMode: PAY_PER_REQUEST      # Billing Mode
+      KeySchema:                        # Primary Key: SnsId
+        - AttributeName: "SnsId"
+          KeyType: "HASH"
+        - AttributeName: "ImgPath"
+          KeyType: "RANGE"       
+      GlobalSecondaryIndexes:
+        - IndexName: myGSI
+          KeySchema: 
+            - AttributeName: "Labels"
+              KeyType: "HASH"
+            - AttributeName: "Persons"
+              KeyType: "RANGE"
+          Projection:
+            NonKeyAttributes:
+              #- Year
+              - ImgPath
+            ProjectionType: "INCLUDE"
+
+      Tags: 
+        - Key: Name
+          Value: imgtable
+        - Key: Env
+          Value: test
+
+       
