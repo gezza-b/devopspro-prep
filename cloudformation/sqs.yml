@@ -1,11 +1,11 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Creates an SQS queue to store image information
 # Deployment:
-# aws cloudformation create-stack --stack-name sqs-cataloguing-devopscert --template-body file://sqs.yml 
+# aws cloudformation create-stack --stack-name sqsCataloguingDevopscert --template-body file://sqs.yml 
 
-# aws cloudformation delete-stack --stack-name sqs-cataloguing-devopscert 
+# aws cloudformation delete-stack --stack-name sqsCataloguingDevopscert 
 
-# aws cloudformation update-stack --stack-name sqs-cataloguing-devopscert --template-body file://sqs.yml 
+# aws cloudformation update-stack --stack-name sqsCataloguingDevopscert --template-body file://sqs.yml 
 
 Resources:
   CatalogueQ:

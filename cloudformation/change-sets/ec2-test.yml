@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Deploy an EC2 instance and then increase the instance size to test change sets
+
+# Deployment:
+# aws cloudformation create-stack --stack-name ec2-test --template-body file://ec2-test.yml --parameters file://ec2-test-params.yml --capabilities CAPABILITY_NAMED_IAM
+
+# Change Set:
+# aws cloudformation create-change-set --stack-name ec2-test --template-body file://ec2-test.yml --parameters file://ec2-test-params.yml --capabilities CAPABILITY_NAMED_IAM
+# aws cloudformation create-change-set --stack-name ec2-test --template-body file://ec2-test.yml --parameters ParameterKey=string,ParameterValue=string --capabilities CAPABILITY_NAMED_IAM
+
+Parameters:
+  VpcId:
+    Type: String
+  SubnetId:
+    Type: String
+  ImageId:
+    Description: AMI ID
+    Type: String
+  InstType:
+    Type: String 
+    Default: t2.small
+  InboundCidr:
+    Type: String
+
+Resources: 
+  PeeringTestEc2:                       # Private Instance
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: !Ref ImageId
+      InstanceType: !Ref InstType
+      SecurityGroupIds:
+        - !Ref PeeringSg        #TODO
+      SubnetId: !Ref SubnetId
+      Monitoring: true
+      IamInstanceProfile: !Ref PeeringTestInstanceProfile
+      Tags:
+        - Key: Name
+          Value: peeringtest
+
+  PeeringTestInstanceProfile:               # IAM Profile       
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      Path: "/"
+      Roles:
+        - !Ref PeeringTestSsmRole      
+
+  PeeringTestSsmRole:                      # SSM Role
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "ec2.amazonaws.com"
+                - "s3.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+
+  PeeringSg:                        # Security group
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow http and ssh to client host
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: "-1"
+          CidrIp: !Ref InboundCidr
