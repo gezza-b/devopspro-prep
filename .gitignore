@@ -11,4 +11,5 @@ Gopkg.*
 .vscode
 packaged.yml
 packaged.yaml
-.env
+.
+*params*
