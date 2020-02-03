@@ -4,7 +4,9 @@ env:
   variables:
     IMAGE_REPO_NAME: "devops2020"
     IMAGE_TAG: "latest"
-    AWS_ACCOUNT_ID = "TBD"
+  parameter-store:
+    AWS_ACCOUNT_ID: "/TEST/ACCOUNT_ID"
+
 
 phases:
   install:
